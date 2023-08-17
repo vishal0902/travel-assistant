@@ -1,79 +1,140 @@
 import * as React from "react";
 import { Grid } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Header from "./components/Header/Header";
 import MyMap from "./components/Map/Map";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createRef } from "react";
 import List from "./components/List/List";
 import getPlacesData from "./ApiHandlers";
 
-const App = () => {
-  const [type, setType] = useState("restaurants");
-  const [rating, setRating] = useState("");
-  const [currentLocation, setCurrentLocation] = useState({})
 
-  const [coords, setCoords] = useState({});
+
+
+
+const App = () => {
+ 
+  
+  const [type, setType] = useState("restaurants");
+  const [rating, setRating] = useState("0");
+
   const [bounds, setBounds] = useState(null);
 
   const [places, setPlaces] = useState([]);
+  const [filteredPlaces, setFilteredPlaces] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [childClicked, setChildClicked] = useState(null)
+  const [markerId, setMarkerId] = useState(null)
+  const [selected, setSelected]= useState(false)
+
+  const [flyto, setFlyto] = useState([]);
+
+  const [viewState, setViewState] = useState({
+    latitude: 0, // Initial latitude
+    longitude: 0, // Initial longitude
+    zoom: 13,
+  });
+
+  const [childClicked, setChildClicked] = useState(null);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude } }) => {
-        setCoords({ lat: latitude, lng: longitude });
-        setCurrentLocation({ lat: latitude, lng: longitude });
+        setViewState((previewState) => ({
+          ...previewState,
+          latitude,
+          longitude,
+        }));
       }
     );
   }, []);
 
-  useEffect( () => {
-       bounds && getPlacesData(bounds.ne, bounds.sw)
-      .then((data)=>{
-        setPlaces(data?.filter((d)=>d.name))
-      })
- 
-  }, [bounds]);
+  useEffect(() => {
+    const filteredPlacesByRating = places?.filter(
+      (place) => Number(place.rating) >= Number(rating)
+    );
+    setFilteredPlaces(filteredPlacesByRating);
+  }, [rating]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    if(bounds){
+      setPlaces(null)
+      setFilteredPlaces(null)
+      getPlacesData(bounds.ne, bounds.sw, type).then((data) => {
+        setPlaces(data?.filter((d) => d.name));
+        setFilteredPlaces(data?.filter((d) => d.name));
+        setRating("0")
+        setSelected(false)
+        setIsLoading(false);
+      });
+    }
+  }, [bounds, type]);
+
+
+  const theme = createTheme({
+    typography: {
+      fontFamily: ['Montserrat', 'Roboto'].join(',')
+    },
+    palette: {
+      type: 'light',
+      primary: {
+        main: '#0f4852',
+      },
+      secondary: {
+        main: '#f50057',
+      },
+    },
+  });
+
+  const [markerRefs, setMarkerRefs] = useState();
+
+  useEffect(() => {
+    setMarkerRefs((refs) => Array(places?.length).fill().map((_, i) => createRef()));
+  }, [places]);
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header />
-      <Grid container spacing={3} style={{ height: "90vh", width: "100%" }}>
-        <Grid item xs={12} md={4}>
-          <List places={places} type={type} setType={setType} rating={rating} setRating={setRating}/>
-          {/* <List
+      <Header setFlyto={setFlyto} setViewState={setViewState} setRating={setRating}/>
+      <Grid container spacing={4}  style={{justifyItems:'center', alignContent:'center', alignItem:'center', height: "90vh", width: "100%" }}>
+        <Grid item xs={12} md={4} >
+          <List
             isLoading={isLoading}
-            childClicked={childClicked}
-            places={filteredPlaces.length ? filteredPlaces : places}
+            filteredPlaces={filteredPlaces}
             type={type}
             setType={setType}
             rating={rating}
             setRating={setRating}
-          /> */}
+            setMarkerRefs={setMarkerRefs}
+            markerRefs={markerRefs}
+            selected={selected}
+            setSelected={setSelected}
+            markerId= {markerId}
+
+          />
         </Grid>
         <Grid
           item
           xs={12}
           md={8}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
+          >
           <MyMap
-            coords={coords}
-            setCoords={setCoords}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            viewState={viewState}
+            setViewState={setViewState}
             bounds={bounds}
             setBounds={setBounds}
-            places={places} 
-            currentLocation =  {currentLocation}
-            childClicked= {childClicked}
-            setChildClicked = {setChildClicked}
+            filteredPlaces={filteredPlaces}
+            childClicked={childClicked}
+            setChildClicked={setChildClicked}
+            setSelected={setSelected}
+            setMarkerId = {setMarkerId}
+            flyto = {flyto}
+            setPlaces= {setPlaces}
+
           />
         </Grid>
       </Grid>

@@ -7,7 +7,14 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 
+import {Autocomplete} from '@react-google-maps/api'
+
 import SearchIcon from '@mui/icons-material/Search';
+import {LocationOnOutlined} from '@mui/icons-material';
+import { useState } from 'react';
+
+
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -51,31 +58,56 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Header() {
+export default function Header({setViewState, setRating, setFlyto}) {
+  
+ 
+  const [autoComplete, setAutoComplete] = useState(null)
+
+  const onPlaceChanged = () => {
+    const lat = autoComplete?.getPlace().geometry.location.lat();
+    const lng = autoComplete?.getPlace().geometry.location.lng();
+    console.log(lat,lng);
+    setRating("0");
+    
+    setFlyto((oldValue)=>[lat,lng])
+    
+    // setViewState((previewState)=>({
+    //   ...previewState,
+    //   latitude:lat,
+    //   longitude:lng,
+    // }))
+  }
+  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-         
+         <LocationOnOutlined style={{height:'50px', width:'50px', marginRight:'10px'}} />
           <Typography
-            variant="h6"
+            variant="h4"
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
             Travo
           </Typography>
-          <Typography>
+          
+          <Typography variant='h5'>
             Explore new places
           </Typography>
-          <Search>
+          
+          <Search style={{width:'20%'}}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
+          <Autocomplete onLoad={(autocomplete)=>setAutoComplete(autocomplete)} onPlaceChanged={onPlaceChanged}>
+          
             <StyledInputBase
               placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
+              inputProps={{ 'aria-label': 'search'}}
+              onClick={(e)=>e.target.value=""}
             />
+          </Autocomplete>
           </Search>
         </Toolbar>
       </AppBar>

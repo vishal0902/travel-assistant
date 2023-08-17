@@ -1,128 +1,138 @@
-import React, { useRef, useEffect, useState } from "react";
-// import GoogleMapReact from "google-map-react";
+import React, { useRef, useEffect } from "react";
+import ReactMapGL, { Marker } from "react-map-gl";
+import { Typography, Paper, Rating, useMediaQuery } from "@mui/material";
+import {LocationOnOutlined} from "@mui/icons-material"
 
-// import { Typography, useMediaQuery } from "@mui/material";
-// import LocationOnOutlinedIcon from "@mui/icons-material";
-// import LocationOnSharp from "@mui/icons-material/LocationOnSharp";
-// import Rating from "@mui/material/Rating";
-// import Paper from "@mui/material/Paper";
+const Map = ({
+  setMarkerId,
+  isLoading,
+  setIsLoading,
+  bounds,
+  setBounds,
+  filteredPlaces: places,
+  setViewState,
+  viewState,
+  flyto,
+  setPlaces
+}) => {
+  const mapRef = useRef();
 
-// import mapStyles from '../../mapStyles';
-// import useStyles from './styles.js';
+  const isDesktop = useMediaQuery('(min-width:600px)');
 
-// import mapboxgl from "mapbox-gl/dist/mapbox-gl";
 
-// const Map = ({
-//   coords,
-//   setCoords,
-//   currentLocation,
-//   setBounds,
-//   places,
-//   childClicked,
-//   setChildClicked,
-// }) => {
-  
-//   const mapRef = useRef();
+  // const MAPBOX_TOKEN =
+  //   "pk.eyJ1IjoidmlzaGFsMDkwMiIsImEiOiJjbGwzazI3c3cwbDN5M2VvNWgxdml0YmpqIn0.dBApM58ZU2qFgFs4P_ejdw";
 
-//   const Marker = ({ children }) => children;
+  // useEffect(() => {
+  //   if (bounds) {
+  //     const { _ne, _sw } = mapRef.current.getMap().getBounds();
+  //     setBounds({ ne: _ne, sw: _sw });
+  //   }
+  // }, [viewState]);
 
-//   return (
-//     <div style={{ height: "90%", width: "100%" }}>
-//       <GoogleMapReact
+
+  useEffect(() => {
+    if (bounds) {
+    // console.log({flyto})
+    // setIsLoading(true)
+      mapRef.current.flyTo({center:[flyto[1], flyto[0]], speed:0.8, curve:1, essential: true})
+      // setTimeout(()=>{
+      //   const { _ne, _sw } = mapRef.current.getMap().getBounds();
+      //   setBounds({ ne: _ne, sw: _sw });
+      // },100)
+      
+      // setTimeout(()=>{
+      //   setIsLoading(false)
+      // },500)
+
+
+    }
+  }, [flyto]);
+
+
+  return (
+    <div style={{ width: "100%", height: "80vh" }}>
+      <ReactMapGL
+        mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+        {...viewState}
         
-//         ref={mapRef}
-//         // onGoogleApiLoaded={({map, maps}) => renderMarkers(map, maps)}
-//         bootstrapURLKeys={{ key: "AIzaSyCaCHq3ds-8_s3urWXCuXaMsjR72vBuAKU" }}
-       
-//         defaultCenter={{ lat: 26.846695, lng: 80.946167 }}
-//         center={{ lat: 26.846695, lng: 80.946167 }}
-//         defaultZoom={14}
-//         margin={[50, 50, 50, 50]}
-//         // options={{ disableDefaultUI: true, zoomControl: true}
-//         onChange={(e) => {
-//           setCoords({ lat: e.center.lat, lng: e.center.lng });
-//           setBounds({ ne: e.bounds.ne, sw: e.bounds.sw });
-//         }}
-//         // onChildClick={(child)=>setChildClicked(child)}
-//       >
-//         {places?.length && places?.map((place, i) => {
-//           <Marker
-//             lat={Number(place.latitude)}
-//             lng={Number(place.longitude)}
-//             key={i}>
-//             <Paper style={{ width: "50px", height: "50px" }} elevation={3}>
-//               <Typography variant="subtitle2" gutterBottom>
-//                 {place.name}
-//               </Typography>
-//               <img src={place?.photo?.images.large.url} alt={place.name} />
-//               <Rating
-//                 name="read-only"
-//                 size="small"
-//                 value={Number(place.rating)}
-//                 readOnly
-//               />
-//             </Paper>
-//           </Marker>
-//         })}
-//       </GoogleMapReact>
-//     </div>
-//   );
-// };
+        
+        mapStyle="mapbox://styles/mapbox/streets-v9"
+        
+        onLoad={(evt) => {
+          setViewState(evt.viewState);
+          const { _ne, _sw } = mapRef.current.getMap().getBounds();
+          setBounds({ ne: _ne, sw: _sw });
+          console.log('onload')
+        }}
+        
+        onMoveEnd={(evt) => {
+          // setViewState(evt.viewState);
+          const { _ne, _sw } = mapRef.current.getMap().getBounds();
+          setBounds({ ne: _ne, sw: _sw });
+          console.log('onMoveEnd')
 
+        }}
 
+        
 
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+        // onDragEnd={(evt) => {
+        //   setViewState(evt.viewState);
+        //   const { _ne, _sw } = mapRef.current.getMap().getBounds();
+        //   setBounds({ ne: _ne, sw: _sw });
+        // }}
 
-const containerStyle = {
-  width: '100%',
-  height: '100%'
+        ref={mapRef}>
+        
+        {!isLoading &&
+          places?.map((place, index) => (
+            <Marker
+              key={index}
+              latitude={place.latitude}
+              longitude={place.longitude}
+              onClick={() => {
+                setMarkerId(index);
+                console.log(index);
+              }}>
+              {
+                !isDesktop ? <LocationOnOutlined /> : <Paper
+                elevation={5}
+                style={{
+                  padding: "5px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  width: "120px",
+                }}>
+                <Typography variant="subtitle2" gutterBottom>
+                  {place.name}
+                </Typography>
+                <img
+                  style={{ cursor: "pointer" }}
+                  alt={place.name}
+                  src={
+                    place.photo
+                      ? place.photo.images.large.url
+                      : "https://i.pinimg.com/736x/23/75/72/237572284635fd45ef5dc45b8b7559e5.jpg"
+                  }
+                />
+                <Rating
+                  name="read-only"
+                  size="small"
+                  value={Number(place.rating)}
+                  readOnly
+                />
+              </Paper>
+              }
+              
+            </Marker>
+            
+            
+
+          ))}
+      </ReactMapGL>
+    </div>
+  );
 };
 
-
-function MyMap({coords, currentLocation, setBounds}) {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyCaCHq3ds-8_s3urWXCuXaMsjR72vBuAKU"
-  })
-
-  const center = {
-    // lat:Number(currentLocation.lat),
-    // lng:Number(currentLocation.lng)
-    lat: -3.745,
-    lng: -38.523
-  }
-
-  const [map, setMap] = React.useState(null)
-
-  const onLoad = React.useCallback(function callback(map) {
-    
-    const bounds = new window.google.maps.LatLngBounds(map);
-    
-    console.log(bounds)
-    // map.fitBounds(bounds);
-    setBounds({ne:bounds.Ua, sw:bounds.Ga})
-    setMap(map)
-  }, [])
-
-  const onUnmount = React.useCallback(function callback(map) {
-    setMap(null)
-  }, [])
-
-  return isLoaded ? (
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-
-        center={currentLocation}
-        zoom={14}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-
-      >
-        { }
-        <></>
-      </GoogleMap>
-  ) : <></>
-}
-
-
-export default MyMap;
+export default Map;
