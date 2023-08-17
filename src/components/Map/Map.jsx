@@ -51,7 +51,7 @@ const Map = ({
 
 
   return (
-    <div style={{ width: "100%", height: "80vh" }}>
+    <div style={{ width: "100%", height:'85vh' }}>
       <ReactMapGL
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
         {...viewState}

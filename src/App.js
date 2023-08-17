@@ -97,8 +97,12 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header setFlyto={setFlyto} setViewState={setViewState} setRating={setRating}/>
-      <Grid container spacing={4}  style={{justifyItems:'center', alignContent:'center', alignItem:'center', height: "90vh", width: "100%" }}>
+      <Grid container spacing={2}  style={{}}>
+
+        <Grid item xs={12} md={12} >
+         <Header setFlyto={setFlyto} setViewState={setViewState} setRating={setRating}/>
+        </Grid>
+
         <Grid item xs={12} md={4} >
           <List
             isLoading={isLoading}

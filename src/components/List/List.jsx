@@ -8,9 +8,9 @@ import {
   Select,
   MenuItem,
   Grid,
+  Item,
   CircularProgress,
 } from "@mui/material";
-
 
 function List({
   isLoading,
@@ -21,74 +21,77 @@ function List({
   setRating,
   markerRefs,
   setSelected,
-  markerId
+  markerId,
 }) {
-
-
-
   return (
-    <div
-      container
-      style={{
-        height: "80%",
-        width: "100%",
-        marginTop: "0rem",
-        marginLeft: "2rem",
-        paddingRight: "0.5rem",
-      }}>
-      <Typography variant="h6">
-        Find Restaurants, Hotels & Attractions Around  
-      </Typography>
-
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="type">Type</InputLabel>
-        <Select
-          id="type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}>
-          <MenuItem value="restaurants">Restaurants</MenuItem>
-          <MenuItem value="hotels">Hotels</MenuItem>
-          <MenuItem value="attractions">Attractions</MenuItem>
-        </Select>
-      </FormControl>
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="rating">Rating</InputLabel>
-        <Select
-          id="rating"
-          value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}>
-          <MenuItem value="0">All</MenuItem>
-          <MenuItem value="3">Above 3.0</MenuItem>
-          <MenuItem value="4">Above 4.0</MenuItem>
-          <MenuItem value="4.5">Above 4.5</MenuItem>
-        </Select>
-      </FormControl>
-
-      <div style={{marginLeft:'2.5rem'}}>
-      {isLoading ? (
-        <div style={{marginTop:'5rem', width:'75%', justifyItems:'center',justifyContent:'center' }}>
-          {/* <LinearProgress style={{marginTop:'3rem', height:'20px', borderRadius:'5px'}}  color="secondary" />
-          <LinearProgress style={{marginTop:'3rem', height:'20px', borderRadius:'5px'}} color="success" />
-          <LinearProgress style={{marginTop:'3rem', height:'20px', borderRadius:'5px'}}  color="secondary" /> */}
-          <CircularProgress color="success" style={{width:'250px', height:'250px'}} />
-        </div>
-      ) : (
-        <Grid
-          container
-          spacing={5}
-          style={{ maxHeight:'55vh', justifyContent:'center', justifyItems:'center', marginTop: "30px", overflow: "auto" }}>
-          
-          {places?.length
-            ? places.map((place, i) => (
-                <Grid key={i} ref={markerRefs[i]} item xs={12}>
-                  <PlaceDetails markerRefs= {markerRefs[i]} selected={markerId===i} setSelected={setSelected} place={place} />
-                </Grid>
-              ))
-            : null}
+    <>
+      <Grid container spacing={2} direction="column" align="center">
+        <Grid item xs={12} md={12}>
+          <Typography variant="h6">
+            Find Restaurants & Attractions Around
+          </Typography>
         </Grid>
-      )}
-      </div>
-    </div>
+
+        <Grid item xs={12} md={12}>
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="type">Type</InputLabel>
+            <Select
+              id="type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}>
+              <MenuItem value="restaurants">Restaurants</MenuItem>
+              {/* <MenuItem value="hotels">Hotels</MenuItem> */}
+              <MenuItem value="attractions">Attractions</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="rating">Rating</InputLabel>
+            <Select
+              id="rating"
+              value={rating}
+              onChange={(e) => setRating(Number(e.target.value))}>
+              <MenuItem value="0">All</MenuItem>
+              <MenuItem value="3">Above 3.0</MenuItem>
+              <MenuItem value="4">Above 4.0</MenuItem>
+              <MenuItem value="4.5">Above 4.5</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12} md={12} style={{marginTop:'2rem'}}>
+            {isLoading ? (
+
+                <CircularProgress
+                  color="success"
+                  style={{ width: "250px", height: "250px", marginTop:'3rem' }}
+                />
+            ) : (
+              <Grid
+                container
+                spacing={3}
+                style={{
+                  maxHeight: "65vh",
+
+                  overflow: "auto",
+                }}>
+                {places?.length
+                  ? places.map((place, i) => (
+                      <Grid item key={i} ref={markerRefs[i]} xs={12} md={12}>
+                        <PlaceDetails
+                          markerRefs={markerRefs[i]}
+                          selected={markerId === i}
+                          setSelected={setSelected}
+                          place={place}
+                        />
+                      </Grid>
+                    ))
+                  : null}
+              </Grid>
+            )}
+        </Grid>
+      
+      </Grid>
+    </>
   );
 }
 

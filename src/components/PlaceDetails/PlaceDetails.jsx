@@ -16,7 +16,7 @@ export default function PlaceDetails({place, markerRefs, selected,setSelected}) 
 
   const imgUrl = place.photo ? place.photo.images.large.url : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSKVVZG-RdhvhVKnfAGBSj2r0034dhY6YBqL8DoHn1fg&s'
   return (
-    <Card elevation={7} sx={{ maxWidth: 300, marginRight: '10px' }}>
+    <Card elevation={7} sx={{ maxWidth: 350 }}>
       <CardActionArea>
         <CardMedia
           component="img"
