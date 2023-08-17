@@ -57,7 +57,7 @@ const Map = ({
         {...viewState}
         
         
-        mapStyle="mapbox://styles/mapbox/streets-v9"
+        mapStyle="mapbox://styles/mapbox/streets-v11"
         
         onLoad={(evt) => {
           setViewState(evt.viewState);
