@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Grid } from "@mui/material";
+import { Grid, Alert, AlertTitle } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Header from "./components/Header/Header";
@@ -14,7 +14,8 @@ import getPlacesData from "./ApiHandlers";
 
 const App = () => {
  
-  
+  const [isLocationAllowed, setIsLocationAllowed] = useState(false);
+
   const [type, setType] = useState("restaurants");
   const [rating, setRating] = useState("0");
 
@@ -30,24 +31,35 @@ const App = () => {
 
   const [flyto, setFlyto] = useState([]);
 
-  const [viewState, setViewState] = useState({
-    latitude: 0, // Initial latitude
-    longitude: 0, // Initial longitude
-    zoom: 13,
-  });
+  const [viewState, setViewState] = useState(null)
+    // latitude: 0, // Initial latitude
+    // longitude: 0, // Initial longitude
+    // zoom: 13,
+  // });
 
   const [childClicked, setChildClicked] = useState(null);
 
-  useEffect(() => {
+  
+  function getCurrentLocation () {
+    
+  
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude } }) => {
+        
         setViewState((previewState) => ({
-          ...previewState,
+          // ...previewState,
           latitude,
           longitude,
+          zoom:13
         }));
+
+        setIsLocationAllowed(true)
       }
     );
+  }
+  
+  useEffect(() => {
+    getCurrentLocation();
   }, []);
 
   useEffect(() => {
@@ -59,7 +71,7 @@ const App = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    if(bounds){
+    if(bounds && isLocationAllowed){
       setPlaces(null)
       setFilteredPlaces(null)
       getPlacesData(bounds.ne, bounds.sw, type).then((data) => {
@@ -97,7 +109,19 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Grid container spacing={2}  style={{}}>
+
+      {
+      !isLocationAllowed 
+      ? 
+      <div style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', height:'100vh'}}>
+
+        <Alert severity="info"   style={{width:'30vw'}}>
+          <AlertTitle>Info</AlertTitle>
+          <strong>Please Allow Location Access to use Travo.</strong>
+          </Alert>
+      </div>
+      
+      : <Grid container spacing={2}  style={{}}>
 
         <Grid item xs={12} md={12} >
          <Header setFlyto={setFlyto} setViewState={setViewState} setRating={setRating}/>
@@ -123,6 +147,7 @@ const App = () => {
           item
           xs={12}
           md={8}
+          style={{paddingRight:'20px'}}
           >
           <MyMap
             isLoading={isLoading}
@@ -141,7 +166,9 @@ const App = () => {
 
           />
         </Grid>
-      </Grid>
+        </Grid>
+      }
+
     </ThemeProvider>
   );
 };

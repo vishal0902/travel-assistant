@@ -35,7 +35,7 @@ const Map = ({
     if (bounds) {
     // console.log({flyto})
     // setIsLoading(true)
-      mapRef.current.flyTo({center:[flyto[1], flyto[0]], speed:0.8, curve:1, essential: true})
+      mapRef.current.flyTo({center:[flyto[1], flyto[0]], speed:1, curve:2, essential: true})
       // setTimeout(()=>{
       //   const { _ne, _sw } = mapRef.current.getMap().getBounds();
       //   setBounds({ ne: _ne, sw: _sw });

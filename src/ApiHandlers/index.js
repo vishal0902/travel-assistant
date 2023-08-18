@@ -18,10 +18,6 @@ export default async function getPlacesData(ne, sw, type) {
           bl_longitude: sw.lng,
           tr_longitude: ne.lng,
           tr_latitude: ne.lat,
-          currency: "INR",
-          open_now: "false",
-          lunit: "km",
-          lang: "en_US",
         },
         headers: {
           "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
