@@ -52,7 +52,7 @@ const App = () => {
           // ...previewState,
           latitude,
           longitude,
-          zoom:13
+          zoom:12
         }));
 
         setIsLocationAllowed(true)
