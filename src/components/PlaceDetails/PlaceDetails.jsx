@@ -12,6 +12,7 @@ export default function PlaceDetails({
   markerRefs,
   selected,
   setSelected,
+  distance
 }) {
   // console.log('mera nam')
   if (selected) {
@@ -36,7 +37,7 @@ export default function PlaceDetails({
           <Typography gutterBottom variant="h6">
             {place.name}
           </Typography>
-          <Box display="flex" justifyContent="space-between" my={2}>
+          <Box display="flex" justifyContent="space-between" my={1}>
             <Rating
               name="read-only"
               size="small"
@@ -64,19 +65,9 @@ export default function PlaceDetails({
             </Typography>
           </Box>
 
-          {place?.awards?.map((award) => (
-            <Box
-              display="flex"
-              boxShadow={10}
-              justifyContent="space-between"
-              my={1}
-              alignItems="center">
-              <img alt={award.display_name} src={award.images.small} />
-              <Typography variant="subtitle2" color="textSecondary">
-                {award.display_name}
-              </Typography>
-            </Box>
-          ))}
+          
+
+
 
           {place?.cuisine?.map(({ name }) => (
             <Chip
@@ -90,7 +81,7 @@ export default function PlaceDetails({
           ))}
 
           {place.address && (
-            <Box display="flex" justifyContent="space-between" my={2}>
+            <Box display="flex" justifyContent="space-between" my={1}>
               <LocationOnOutlined variant="body2" />
 
               <Typography gutterBottom justifyContent="right" variant="body2">
@@ -98,6 +89,10 @@ export default function PlaceDetails({
               </Typography>
             </Box>
           )}
+          
+          <Box display="flex" justifyContent="center" my={1}>
+          <Typography variant="subtitle2">Distance : {distance} Kms. </Typography>
+          </Box>
 
           {place.phone && (
             <Box display="flex" justifyContent="left" my={0}>
@@ -131,40 +126,3 @@ export default function PlaceDetails({
   );
 }
 
-///////////////////////////////////////////////////////////////////////
-/*import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
-
-export default function MultiActionAreaCard() {
-  return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          image="/static/images/cards/contemplative-reptile.jpg"
-          alt="green iguana"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            Lizard
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <Button size="small" color="primary">
-          Share
-        </Button>
-      </CardActions>
-    </Card>
-  );
-}
-*/

@@ -16,6 +16,8 @@ const App = () => {
  
   const [isLocationAllowed, setIsLocationAllowed] = useState(false);
 
+  const [currentLocation, setCurrentLocation] = useState({});
+
   const [type, setType] = useState("restaurants");
   const [rating, setRating] = useState("0");
 
@@ -45,7 +47,7 @@ const App = () => {
   
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude } }) => {
-        
+        setCurrentLocation({lat:latitude,lng:longitude})
         setViewState((previewState) => ({
           // ...previewState,
           latitude,
@@ -140,6 +142,7 @@ const App = () => {
             selected={selected}
             setSelected={setSelected}
             markerId= {markerId}
+            currentLocation= {currentLocation}
 
           />
         </Grid>

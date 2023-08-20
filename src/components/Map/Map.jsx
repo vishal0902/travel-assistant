@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import ReactMapGL, { Marker } from "react-map-gl";
+import ReactMapGL, { Marker, NavigationControl } from "react-map-gl";
 import { Typography, Paper, Rating, useMediaQuery } from "@mui/material";
 import {LocationOnOutlined} from "@mui/icons-material"
 
@@ -130,6 +130,7 @@ const Map = ({
             
 
           ))}
+          <NavigationControl />
       </ReactMapGL>
     </div>
   );

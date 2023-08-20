@@ -46,7 +46,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    paddingLeft: `calc(0.1em + ${theme.spacing(2)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
@@ -97,10 +97,10 @@ export default function Header({setViewState, setRating, setFlyto}) {
           </Typography>
           
           <Search style={{width:'20%'}}>
-            <SearchIconWrapper>
+            {/* <SearchIconWrapper>
               <SearchIcon />
-            </SearchIconWrapper>
-          <Autocomplete onLoad={(autocomplete)=>setAutoComplete(autocomplete)} onPlaceChanged={onPlaceChanged}>
+            </SearchIconWrapper> */}
+          <Autocomplete style={{width:'100%'}} onLoad={(autocomplete)=>setAutoComplete(autocomplete)} onPlaceChanged={onPlaceChanged}>
           
             <StyledInputBase
               placeholder="Search…"

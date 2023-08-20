@@ -1,6 +1,7 @@
 import React from "react";
-
+import * as turf from '@turf/turf';
 import PlaceDetails from "../PlaceDetails/PlaceDetails";
+
 import {
   Typography,
   FormControl,
@@ -22,7 +23,23 @@ function List({
   markerRefs,
   setSelected,
   markerId,
+  currentLocation
 }) {
+
+
+  const calculateDistance = (latitude, longitude)=> {
+    const distance = turf.distance(
+      turf.point([longitude, latitude]),
+      turf.point([currentLocation.lng,currentLocation.lat]),
+      {units:"kilometers"}
+    )
+    // console.log(typeof distance)
+    return distance.toFixed(2);
+
+  }
+
+
+
   return (
     <>
       <Grid container spacing={2} direction="column" align="center">
@@ -82,6 +99,7 @@ function List({
                           selected={markerId === i}
                           setSelected={setSelected}
                           place={place}
+                          distance = {calculateDistance(place.latitude,place.longitude)}
                         />
                       </Grid>
                     ))
