@@ -41,15 +41,15 @@ function List({
 
 
   return (
-    <>
+    <div>
       <Grid container spacing={2} direction="column" align="center">
-        <Grid item xs={12} md={12}>
+        <Grid style={{maxHeight:'4vh'}} item xs={12} md={12}>
           <Typography variant="h6">
             Find Restaurants & Attractions Around
           </Typography>
         </Grid>
 
-        <Grid item xs={12} md={12}>
+        <Grid style={{maxHeight:'10vh'}} item xs={12} md={12}>
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="type">Type</InputLabel>
             <Select
@@ -57,7 +57,7 @@ function List({
               value={type}
               onChange={(e) => setType(e.target.value)}>
               <MenuItem value="restaurants">Restaurants</MenuItem>
-              {/* <MenuItem value="">Hotels</MenuItem> */}
+              <MenuItem value="">Hotels</MenuItem>
               <MenuItem value="attractions">Attractions</MenuItem>
             </Select>
           </FormControl>
@@ -87,7 +87,7 @@ function List({
                 container
                 spacing={3}
                 style={{
-                  maxHeight: "65vh",
+                  maxHeight: "71vh",
 
                   overflow: "auto",
                 }}>
@@ -109,7 +109,7 @@ function List({
         </Grid>
       
       </Grid>
-    </>
+    </div>
   );
 }
 
